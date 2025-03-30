@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Language Learning Chatbot</title>
+  <style>
+    /* ------------------ Reset & Globals ------------------ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f7f9fc;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* ------------------ Navigation Bar ------------------ */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4a90e2;
+      padding: 15px 30px;
+      color: #fff;
+    }
+    .navbar .logo img {
+      max-width: 150px;
+      height: auto;
+    }
+    .navbar-list {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+    }
+    .navbar-list li a {
+      color: #fff;
+      font-weight: 500;
+      transition: color 0.3s ease;
+    }
+    .navbar-list li a:hover {
+      color: #cfd8ff;
+    }
+
+    /* ------------------ Main Content ------------------ */
+    main {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #eef3f9;
+    }
+    .chat-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .header-chat {
+      background: #4a90e2;
+      color: #fff;
+      padding: 15px;
+      text-align: center;
+      font-size: 1.2em;
+    }
+    .chat-box {
+      flex: 1;
+      padding: 20px;
+      background: #fdfdfd;
+      overflow-y: auto;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .chat-message {
+      margin-bottom: 15px;
+      display: flex;
+    }
+    .chat-message p {
+      padding: 10px 15px;
+      border-radius: 20px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+    .user-message {
+      justify-content: flex-end;
+    }
+    .user-message p {
+      background: #4a90e2;
+      color: #fff;
+    }
+    .bot-message {
+      justify-content: flex-start;
+    }
+    .bot-message p {
+      background: #e9ecef;
+      color: #333;
+    }
+    .input-container {
+      display: flex;
+      padding: 15px;
+      background: #f1f3f5;
+    }
+    .input-container input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 20px;
+      margin-right: 10px;
+      font-size: 1em;
+    }
+    .input-container button {
+      background: #4a90e2;
+      border: none;
+      border-radius: 20px;
+      color: #fff;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s ease;
+    }
+    .input-container button:hover {
+      background: #357ab8;
+    }
+
+    /* ------------------ Footer ------------------ */
+    footer.footer {
+      background-image: url('./static/learn_logo.png');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      color: #fff;
+      padding: 40px 20px;
+    }
+    /* Add an overlay to darken the footer background for better contrast */
+    footer.footer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #4a90e2;
+      z-index: 1;
+    }
+    footer .footer-top {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    footer .footer-brand,
+    footer .footer-list,
+    footer .social-list {
+      flex: 1 1 200px;
+      margin: 10px;
+    }
+    footer .footer-brand img {
+      max-width: 150px;
+      height: auto;
+    }
+    footer .footer-brand-text {
+      margin: 10px 0;
+      font-size: 0.95em;
+    }
+    footer .wrapper {
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+      font-size: 0.9em;
+    }
+    footer .wrapper .span {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+    footer .footer-link {
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+    footer .footer-link:hover {
+      color: #cfd8ff;
+    }
+    footer .footer-bottom {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.3);
+      padding-top: 20px;
+    }
+    footer .copyright {
+      font-size: 0.9em;
+    }
+    /* Newsletter Form */
+    .newsletter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .newsletter-form input {
+      padding: 8px 10px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.9em;
+    }
+    .newsletter-form button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 20px;
+      background: #357ab8;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: background 0.3s ease;
+    }
+    .newsletter-form button:hover {
+      background: #2d6390;
+    }
+    /* ------------------ Responsive ------------------ */
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+      }
+      .navbar-list {
+        flex-direction: column;
+        gap: 10px;
+      }
+      footer .footer-top {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar" data-navbar>
+    <div class="wrapper">
+      <a href="#" class="logo">
+        <img src="./static/learn_logo.png" width="162" height="50" alt="LearnLang AI logo">
+      </a>
+    </div>
+    <ul class="navbar-list">
+      <li class="navbar-item">
+        <a href="#home" class="navbar-link" data-nav-link>Home</a>
+      </li>
+      <li class="navbar-item">
+        <a href="#supported" class="navbar-link" data-nav-link>Supported Languages</a>
+      </li>
+      <li class="navbar-item">
+        <a href="#about" class="navbar-link" data-nav-link>About</a>
+      </li>
+      <li class="navbar-item">
+        <a href="#footer" class="navbar-link" data-nav-link>Contact</a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="home">
+    <div class="chat-container">
+      <div class="header-chat">Chat with the AI</div>
+      <div id="chatBox" class="chat-box">
+        <!-- Chat messages will be appended here -->
+      </div>
+      <div class="input-container">
+        <input type="text" id="userInput" placeholder="Type your message here..." />
+        <button id="sendBtn">Send</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" id="footer">
+    <div class="footer-top section">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+            <img src="./static/learn_logo.png" width="162" height="50" alt="LearnLang AI logo">
+        </a>
+        <p class="footer-brand-text">
+          LangLearn AI done by Nenavath Sunil
+        </p>
+        <div class="wrapper">
+          <span class="span">Add:</span>
+          <address class="address">Hyderabad, India</address>
+        </div>
+        <div class="wrapper">
+          <span class="span">Call:</span>
+          <a href="tel:+918143258356" class="footer-link">+91 8143258356</a>
+        </div>
+        <div class="wrapper">
+          <span class="span">Email:</span>
+          <a href="mailto:sunilstar7852@gmail.com" class="footer-link">sunilstar7852@gmail.com</a>
+        </div>
+      </div>
+
+      <ul class="footer-list">
+        <li>
+          <p class="footer-list-title">Online Platform</p>
+        </li>
+        <li>
+          <a href="#about" class="footer-link">About</a>
+        </li>
+        <li>
+          <a href="#supported" class="footer-link">Courses</a>
+        </li>
+        <li>
+          <a href="#blog" class="footer-link">Instructor</a>
+        </li>
+        <li>
+          <a href="#events" class="footer-link">Events</a>
+        </li>
+        <li>
+          <a href="#profile" class="footer-link">Instructor Profile</a>
+        </li>
+        <li>
+          <a href="#guide" class="footer-link">Purchase Guide</a>
+        </li>
+      </ul>
+
+      <ul class="footer-list">
+        <li>
+          <p class="footer-list-title">Links</p>
+        </li>
+        <li>
+          <a href="#contact" class="footer-link">Contact Us</a>
+        </li>
+        <li>
+          <a href="#gallery" class="footer-link">Gallery</a>
+        </li>
+        <li>
+          <a href="#news" class="footer-link">News and Articles</a>
+        </li>
+        <li>
+          <a href="#faqs" class="footer-link">FAQ's</a>
+        </li>
+        <li>
+          <a href="#signin" class="footer-link">Sign In/Registration</a>
+        </li>
+        <li>
+          <a href="#coming" class="footer-link">Coming Soon</a>
+        </li>
+      </ul>
+
+      <div class="footer-list">
+        <p class="footer-list-title">Contacts</p>
+        <p class="footer-list-text">
+          Enter your email address to register to our newsletter subscription
+        </p>
+        <form action="" class="newsletter-form">
+          <input type="email" name="email_address" placeholder="Your email" required class="input-field">
+          <button type="submit" class="btn has-before">
+            <span class="span">Subscribe</span>
+            <!-- Ionicons placeholder; include the ion-icons library if desired -->
+            <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+          </button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="copyright">
+        Copyright 2022 All Rights Reserved by 
+        <a href="#" class="footer-link">LangLearn AI</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Chat Functionality Script -->
+  <script>
+    const chatBox = document.getElementById('chatBox');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+
+    // Append a message to the chat box
+    function appendMessage(sender, message) {
+      const messageContainer = document.createElement('div');
+      messageContainer.classList.add('chat-message', sender === 'user' ? 'user-message' : 'bot-message');
+      const messageText = document.createElement('p');
+      messageText.innerText = message;
+      messageContainer.appendChild(messageText);
+      chatBox.appendChild(messageContainer);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Send message to Flask backend and display response
+    async function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+      appendMessage('user', message);
+      userInput.value = '';
+
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: message })
+        });
+        const data = await response.json();
+        appendMessage('bot', data.response);
+      } catch (error) {
+        appendMessage('bot', 'Error: ' + error.message);
+      }
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+  </script>
+</body>
+</html>
