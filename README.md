@@ -22,6 +22,9 @@ The **Language Learning Chatbot** is an AI-powered conversational assistant desi
   - Flask (optional, for web deployment)
 
 ## System Architecture
+
+![Chatbot Architecture](Language_Learning_Chatbot_Architecture.png)
+
 1. **User Input Handling**:
    - The chatbot asks users for their target language, native language, and proficiency level.
 2. **Scenario Setup**:
