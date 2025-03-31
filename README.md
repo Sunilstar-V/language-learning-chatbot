@@ -113,7 +113,7 @@ Final Report: "Here are the common mistakes you made and how to improve..."
 - Deploy as a web-based or mobile application.
 
 ## Contributors
-- **Your Name** - AI Engineer & Developer
+- **Nenavath Sunil** - AI Engineer & Developer
 
 ## License
 This project is licensed under the [MIT License](LICENSE).
